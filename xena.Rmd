@@ -1,0 +1,89 @@
+---
+title: "UCSC Xena Hiplot Mirror Stats"
+author: "Hiplot team"
+date: "Update at `r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, echo = FALSE, 
+  warning = FALSE, message = FALSE, 
+  dpi = 300)
+
+library(tidyverse)
+library(lubridate)
+library(scales)
+library(DT)
+```
+
+```{r}
+# Include data
+load("XenaLog.RData")
+```
+
+
+## Trends
+
+### Individual Stats
+
+```{r trends-date, out.width='30%', fig.show='hold'}
+theme_extra <- theme(axis.text.x = element_text(angle=30, hjust = 1))
+
+ggplot(PV, aes(day, n)) +
+  geom_line(color = "steelblue") +
+  scale_x_date(labels = date_format("%Y-%m")) +
+  labs(x = NULL, y = "PV") +
+  theme_minimal(base_size = 20) +
+  theme_extra
+
+ggplot(UV, aes(day, n)) +
+  geom_line(color = "steelblue") +
+  scale_x_date(labels = date_format("%Y-%m")) +
+  labs(x = NULL, y = "UV") +
+  theme_minimal(base_size = 20) +
+  theme_extra
+
+ggplot(Downloads, aes(day, downloads)) +
+  geom_line(color = "steelblue") +
+  scale_x_date(labels = date_format("%Y-%m")) +
+  labs(x = NULL, y = "Downloads") +
+  theme_minimal(base_size = 20) +
+  theme_extra
+```
+
+### Cumulative Stats
+
+```{r trends-date-cum, out.width='30%', fig.show='hold'}
+ggplot(PV, aes(day, cumsum(n))) +
+  geom_line(color = "steelblue") +
+  scale_x_date(labels = date_format("%Y-%m")) +
+  labs(x = NULL, y = "PV") +
+  theme_minimal(base_size = 20) +
+  theme_extra
+
+ggplot(UV, aes(day, cumsum(n))) +
+  geom_line(color = "steelblue") +
+  scale_x_date(labels = date_format("%Y-%m")) +
+  labs(x = NULL, y = "UV") +
+  theme_minimal(base_size = 20) +
+  theme_extra
+
+ggplot(Downloads, aes(day, cumsum(downloads))) +
+  geom_line(color = "steelblue") +
+  scale_x_date(labels = date_format("%Y-%m")) +
+  labs(x = NULL, y = "Downloads") +
+  theme_minimal(base_size = 20) +
+  theme_extra
+```
+
+## Detail stats in days
+
+```{r datatable}
+DT::datatable(UV %>% rename(UV = n))
+
+DT::datatable(PV %>% rename(PV = n))
+
+DT::datatable(Downloads)
+```
+
