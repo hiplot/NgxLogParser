@@ -1,7 +1,7 @@
 library(tidyverse)
 library(lubridate)
 library(scales)
-
+library(rmarkdown)
 
 # Input log ---------------------------------------------------------------
 
@@ -51,7 +51,7 @@ UV = logdf %>%
   count(day)
 
 PV = logdf %>%
-  mutate(interval = floor_date(time_local, unit = "10minutes")) %>% # 10 分钟内的页面访问看作一次 PV
+  mutate(interval = floor_date(time_local, unit = "10minutes")) %>% # 10 分钟内的相同页面(http_referer)多次访问看作一次 PV
   distinct(day, interval, http_referer) %>%
   count(day)
 
@@ -66,4 +66,4 @@ save(UV, PV, Downloads, file = "XenaLog.RData")
 
 # Visualize ---------------------------------------------------------------
 
-rmarkdown::render("xena.Rmd", output_file = "index.html")
+render("xena.Rmd", output_file = "index.html")
